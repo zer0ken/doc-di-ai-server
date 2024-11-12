@@ -48,7 +48,6 @@ class Bot:
         )
         self.sum_model = GenerativeModel(
             model_name="gemini-1.5-flash",
-            tools=tools,
             system_instruction=SUMMARIZER_SYSTEM_INSTRUCTION
         )
         self.sessions: dict[str, ChatSession] = {}
