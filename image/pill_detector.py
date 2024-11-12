@@ -2,7 +2,7 @@ from threading import Thread
 
 from ultralytics import YOLO
 
-from speed import speed
+from image.speed import speed
 
 
 class PillDetector:

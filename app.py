@@ -110,3 +110,7 @@ def extract_pill_features():
         return {f'error': f'Unhandled exception occured: {e}'}, 500
     else:
         return result
+
+
+if __name__ == '__main__':
+    print('test')

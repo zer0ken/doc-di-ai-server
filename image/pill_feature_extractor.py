@@ -1,10 +1,10 @@
 import cv2
 
-from pill_color_classifier import PillColorClassifier
-from pill_detector import PillDetector
-from resnet18.resnet18classifier import ResNet18Classifier
-from speed import speed
-from thread_with_return import ThreadWithReturn
+from image.pill_color_classifier import PillColorClassifier
+from image.pill_detector import PillDetector
+from image.resnet18.resnet18classifier import ResNet18Classifier
+from image.speed import speed
+from image.thread_with_return import ThreadWithReturn
 
 
 class PillFeatureExtractor:
@@ -18,9 +18,9 @@ class PillFeatureExtractor:
 
     def __init__(self):
         self.shapes = {0: '기타-8자형', 1: '기타-강낭콩형', 2: '기타-구형', 3: '기타-나뭇잎형', 4: '기타-나비형', 5: '기타-눈물형', 6: '기타- 도넛형',
-                          7: '기타-레몬형', 8: '기타-방패형', 9: '기타-볼록삼각형', 10: '기타-사과형', 11: '기타-십각형', 12: '기타-치아 형',
-                          13: '기타-클로버형', 14: '기타-튜브형', 15: '기타-하트형', 16: '마름모형', 17: '반원형', 18: '사각형', 19: '삼각형',
-                          20: '오각형', 21: '원형', 22: '육각형', 23: '장방형', 24: '타원형', 25: '팔각형'}
+                       7: '기타-레몬형', 8: '기타-방패형', 9: '기타-볼록삼각형', 10: '기타-사과형', 11: '기타-십각형', 12: '기타-치아 형',
+                       13: '기타-클로버형', 14: '기타-튜브형', 15: '기타-하트형', 16: '마름모형', 17: '반원형', 18: '사각형', 19: '삼각형',
+                       20: '오각형', 21: '원형', 22: '육각형', 23: '장방형', 24: '타원형', 25: '팔각형'}
 
         self.pill_detector = PillDetector()
         self.pill_shape_classifier = ResNet18Classifier.from_pretrained(

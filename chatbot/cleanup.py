@@ -1,7 +1,7 @@
 import json
 import logging
 
-from tools import validate_pill_shape, validate_pill_color
+from chatbot.tools import validate_pill_shape, validate_pill_color
 
 log = logging.getLogger(__name__)
 

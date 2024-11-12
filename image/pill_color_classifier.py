@@ -4,7 +4,7 @@ import colorsys
 
 from sklearn.cluster import KMeans
 
-from speed import speed
+from image.speed import speed
 
 
 class PillColorClassifier:

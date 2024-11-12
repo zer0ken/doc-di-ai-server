@@ -8,13 +8,11 @@ import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 from google.generativeai import GenerativeModel, ChatSession
 from google.generativeai.types import HarmCategory, HarmBlockThreshold, BlockedPromptException, StopCandidateException
-from jinja2.filters import FILTERS
-from jinja2.nodes import Block
 
-from scrap import scrap_q_and_a
-from system_instruction import CHATBOT_SYSTEM_INSTRUCTION, SUMMARIZER_SYSTEM_INSTRUCTION
-from tools import tools
-from cleanup import cleanup_chat_response, cleanup_summary_response
+from chatbot.scrap import scrap_q_and_a
+from chatbot.system_instruction import CHATBOT_SYSTEM_INSTRUCTION, SUMMARIZER_SYSTEM_INSTRUCTION
+from chatbot.tools import tools
+from chatbot.cleanup import cleanup_chat_response, cleanup_summary_response
 
 load_dotenv()
 genai.configure(api_key=os.getenv('GENAI_API_KEY'))
