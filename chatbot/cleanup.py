@@ -1,0 +1,112 @@
+import json
+import logging
+
+from tools import validate_pill_shape, validate_pill_color
+
+log = logging.getLogger(__name__)
+
+
+def remove_markdown(text):
+    while '```json' in text:
+        text = text.replace('```json', '')
+    while '```' in text:
+        text = text.replace('```', '')
+    return text.strip()
+
+
+
+def cleanup_chat_response(response: str, recipient_id: str) -> list[dict]:
+    log.debug(f'@CLEANUP_CHAT: {response}')
+
+    response = remove_markdown(response)
+
+    """json 문자열을 파이썬 자료구조로 파싱"""
+    response_object = json.loads(response)
+
+    """주요 값들을 추출"""
+    custom = response_object.get('custom', None) or {}
+    action = custom.get('action', None)
+    data = custom.get('data', None) or {}
+
+    shape = data.get('shape', None) or ''
+    color = data.get('color1', None) or ''
+    imprint = data.get('txt1', None) or ''
+
+    query = data.get('query', None) or ''
+    age = data.get('age', None) or ''
+    gender = data.get('gender', None) or ''
+
+    """유효성 검사"""
+    has_form = True
+
+    if not custom or action is None or not data:
+        has_form = False
+    elif action == 'DB_SEARCH':
+        if not shape or not color or not imprint:
+            has_form = False
+        elif not validate_pill_shape(shape):
+            has_form = False
+        elif not validate_pill_color(color):
+            has_form = False
+    elif action == 'WEB_SEARCH':
+        if not query or not age or not gender:
+            has_form = False
+
+    if not has_form and custom:
+        del response_object['custom']
+
+    """불필요한 값 제거"""
+    if has_form:
+        if action == 'DB_SEARCH':
+            for key in ('query', 'age', 'gender'):
+                if key in data:
+                    del data[key]
+            if imprint == '없음':
+                del data['txt1']
+        elif action == 'WEB_SEARCH':
+            for key in ('shape', 'color1', 'txt1'):
+                if key in data:
+                    del data[key]
+            if gender not in ('거부', '생략') :
+                data['query'] = gender + ' ' + data['query']
+            if age != '거부':
+                data['query'] = age + ' ' + data['query']
+            del data['age']
+            del data['gender']
+
+    response_object['recipient_id'] = recipient_id
+
+    return [response_object]
+
+
+def cleanup_summary_response(response: str, recipient_id: str) -> list[dict]:
+    log.debug(f'@CLEANUP_SUM: {response}')
+
+    response = remove_markdown(response)
+
+    response_object_ = json.loads(response)
+    valid_summaries = []
+
+    summary = response_object_['summary']
+    data = response_object_['data']
+
+    for datum in data:
+        title = datum.get('title', None) or ''
+        link = datum.get('title', None) or ''
+        question = datum.get('question', None) or ''
+        answer = datum.get('answer', None) or ''
+
+        if not title or not link or not question or not answer:
+            continue
+        # if len(question) > 150 or len(answer) >= 500:
+        #     continue
+
+        valid_summaries.append(datum)
+
+    response_object = {
+        'recipient_id': recipient_id,
+        'text': summary,
+        'data': valid_summaries,
+    }
+
+    return [response_object]
