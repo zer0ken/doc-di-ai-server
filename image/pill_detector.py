@@ -7,7 +7,7 @@ from image.speed import speed
 
 class PillDetector:
     def __init__(self):
-        self.model = YOLO('models/yolov11_best.pt')
+        self.model = YOLO('image/models/yolov11_best.pt')
 
     def __call__(self, image_path):
         return self.crop_pill(image_path)

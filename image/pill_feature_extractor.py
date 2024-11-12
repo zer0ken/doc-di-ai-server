@@ -24,7 +24,7 @@ class PillFeatureExtractor:
 
         self.pill_detector = PillDetector()
         self.pill_shape_classifier = ResNet18Classifier.from_pretrained(
-            './resnet18/models/resnet18_best.pth',
+            'image/resnet18/models/resnet18_best.pth',
             num_classes=26,
             idx_to_class=self.shapes
         )
