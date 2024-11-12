@@ -36,7 +36,7 @@ class Bot:
 
     def __init__(self):
         self.chat_model = GenerativeModel(
-            model_name="gemini-1.5-flash-001",
+            model_name="gemini-1.5-flash",
             tools=tools,
             system_instruction=CHATBOT_SYSTEM_INSTRUCTION,
             safety_settings={
@@ -129,6 +129,7 @@ if __name__ == '__main__':
         }
         for _ in range(10)
     ]
-    Bot.get_instance().get_summary_response('test001', test_data)
+    print(Bot.get_instance().get_summary_response('test001', test_data))
+    print(Bot.get_instance().get_chat_response('test001', '안녕'))
 
 # todo: expire idle session automatically

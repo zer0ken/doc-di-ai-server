@@ -9,7 +9,7 @@ def validate_pill_color(color: str) -> bool:
     return color in ["하양", "노랑", "주황", "분홍", "빨강", "갈색", "연두", "초록", "청록", "파랑", "남색", "자주", "보라", "회색", "검정", "투명"]
 
 
-def validate_pill_shape(shaper) -> bool:
+def validate_pill_shape(shape: str) -> bool:
     """
     Valid shape names' list is ["원형", "타원형", "장방형", "반원형", "삼각형", "사각형", "마름모형", "오각형", "육각형", "팔각형", "기타"].
 
@@ -29,7 +29,7 @@ def validate_query_input(query: str, age: str, gender: str) -> bool:
     :param gender: 사용자의 성별
     :return: 양식이 완성되었으면 true, 아니면 false`
     """
-    return query and age and gender
+    return bool(query and age and gender)
 
 
 tools = (
