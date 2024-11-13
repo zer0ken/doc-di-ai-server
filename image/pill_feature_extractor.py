@@ -3,7 +3,8 @@ import colorsys
 import cv2
 import numpy as np
 
-from image.colors_ import name_to_color, confusing_reds, confusing_yellows
+from image.colors_ import name_to_color, confusing_reds, confusing_yellows, similar_reds, similar_greens, similar_blues, \
+    similar_purples
 from image.pill_color_classifier import PillColorClassifier
 from image.pill_detector import PillDetector
 from image.resnet18.resnet18classifier import ResNet18Classifier
@@ -71,25 +72,25 @@ class PillFeatureExtractor:
         for i, cropped_image in enumerate(cropped_images):
             thread = ThreadWithReturn(target=self.pill_color_classifier, args=(cropped_image,))
             thread.start()
-            # colors.append(thread)
-            # remove below
-            colors.append(thread.join())
+            colors.append(thread)
 
-        # for i, color in enumerate(colors):
-        #     colors[i] = color.join()
+        for i, color in enumerate(colors):
+            colors[i] = color.join()
 
         colors_ = self.cleanup_colors(colors)
         shapes_ = self.cleanup_shapes(shapes)
+        similar_colors = self.get_similar_colors(colors_)
 
         for i, cropped_image in enumerate(cropped_images):
-            print(f"{i}: {colors_[i]} {shapes_[i]}")
+            print(f"{i}: {colors_[i]} {shapes_[i]} {similar_colors[i]}")
 
         for i, cropped_image in enumerate(cropped_images):
             cv2.imshow(f'{i}-{colors_[i]}-{shapes_[i]}', cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-        return [{'color': color, 'shape': shape} for color, shape in zip(colors, shapes)]
+        return [{'color': color, 'shape': shape, 'similar_color': similar_colors}
+                for color, shape, similar_colors in zip(colors_, shapes_, similar_colors)]
 
     @speed
     def cleanup_shapes(self, shapes: list[str]):
@@ -107,6 +108,25 @@ class PillFeatureExtractor:
                 shapes_.append([shape])
 
         return shapes_
+
+    @speed
+    def get_similar_colors(self, colorsets: list[list[tuple]]):
+        colorsets_ = []
+        for colorset in colorsets:
+            colorset_ = []
+            for color in colorset:
+                similar_colors = set()
+                if color in similar_reds:
+                    similar_colors.update(similar_reds)
+                elif color in similar_greens:
+                    similar_colors.update(similar_greens)
+                elif color in similar_blues:
+                    similar_colors.update(similar_blues)
+                elif color in similar_purples:
+                    similar_colors.update(similar_purples)
+                colorset_.append(list(similar_colors))
+            colorsets_.append(colorset_)
+        return colorsets_
 
     @speed
     def cleanup_colors(self, colorsets: list[list[tuple]]):
@@ -152,7 +172,8 @@ class PillFeatureExtractor:
 
                 if red_closest not in confusing_yellows.keys():
                     continue
-                yellow_closest = min(confusing_yellows.keys(), key=lambda name: rgb_dist(confusing_yellows[name], color))
+                yellow_closest = min(confusing_yellows.keys(),
+                                     key=lambda name: rgb_dist(confusing_yellows[name], color))
                 colorsets[i][j] = yellow_closest
 
             colorsets[i] = list(set(color_pair))

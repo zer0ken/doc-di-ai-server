@@ -49,28 +49,28 @@ class PillColorClassifier:
             del cluster_weights[outer_label]
         pill_colors = [tuple(map(int, cluster_centers[label])) for label in cluster_weights.keys()]
 
-        # 이미지 표시
-        fig, axes = plt.subplots(1, 3, figsize=(12, 6))
-        axes[0].imshow(resized_img)  # 원본 리사이즈 이미지
-        axes[0].set_title(f"Resized Image (100x100)\nMost Common Cluster Colors")
-        axes[0].axis('off')
+        # # 이미지 표시
+        # fig, axes = plt.subplots(1, 3, figsize=(12, 6))
+        # axes[0].imshow(resized_img)  # 원본 리사이즈 이미지
+        # axes[0].set_title(f"Resized Image (100x100)\nMost Common Cluster Colors")
+        # axes[0].axis('off')
+        #
+        # # 세그멘테이션 이미지 표시
+        # axes[1].imshow(segmented_img)  # K-means 세그멘테이션 이미지
+        # axes[1].set_title("K-means Segmentation")
+        # axes[1].axis('off')
 
-        # 세그멘테이션 이미지 표시
-        axes[1].imshow(segmented_img)  # K-means 세그멘테이션 이미지
-        axes[1].set_title("K-means Segmentation")
-        axes[1].axis('off')
-
-        pill_color = pill_colors
-        # 중앙에 가장 많이 포함된 클러스터 색상 순서대로 표시
-        if len(pill_color) == 2:
-            color_patch = np.ones((50, 100, 3), dtype=np.uint8)
-            color_patch[:, :50] = pill_color[0]  # 좌측 색상
-            color_patch[:, 50:] = pill_color[1]  # 우측 색상
-        else:
-            color_patch = np.ones((100, 100, 3), dtype=np.uint8)
-            color_patch[:, :] = pill_color[0]  # 좌측 색상
-        axes[2].imshow(color_patch)  # 색상 패치
-        axes[2].axis('off')
-
-        plt.show()
+        # pill_color = pill_colors
+        # # 중앙에 가장 많이 포함된 클러스터 색상 순서대로 표시
+        # if len(pill_color) == 2:
+        #     color_patch = np.ones((50, 100, 3), dtype=np.uint8)
+        #     color_patch[:, :50] = pill_color[0]  # 좌측 색상
+        #     color_patch[:, 50:] = pill_color[1]  # 우측 색상
+        # else:
+        #     color_patch = np.ones((100, 100, 3), dtype=np.uint8)
+        #     color_patch[:, :] = pill_color[0]  # 좌측 색상
+        # axes[2].imshow(color_patch)  # 색상 패치
+        # axes[2].axis('off')
+        #
+        # plt.show()
         return pill_colors

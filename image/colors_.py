@@ -7,3 +7,7 @@ confusing_reds = {'빨강': (255, 0, 0), '갈색': (171, 64, 24), '분홍': (255
 
 confusing_yellows = {'노랑': (255, 255, 0), '주황': (255, 127, 0)}
 
+similar_reds = {'노랑', '주황', '분홍', '빨강', '갈색'}
+similar_greens = {'연두', '초록', '청록'}
+similar_blues = {'파랑', '남색'}
+similar_purples = {'자주', '보라'}

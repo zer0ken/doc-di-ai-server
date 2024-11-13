@@ -121,6 +121,3 @@ if __name__ == '__main__':
         file_path = os.path.join(base_dir, file)
         pills = extractor.extract_with_path(file_path)
         print(pills)
-        cv2.imshow(file, cv2.imread(file_path, cv2.IMREAD_COLOR))
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
