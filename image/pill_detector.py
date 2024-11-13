@@ -14,7 +14,7 @@ class PillDetector:
 
     @speed
     def crop_pill(self, image):
-        results = self.model(image, conf=0.60, imgsz=1024)
+        results = self.model(image, conf=0.60, imgsz=512)
         image_h, image_w, _ = image.shape
 
         threads = []

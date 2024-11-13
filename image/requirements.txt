@@ -13,3 +13,4 @@ seaborn~=0.13.2
 
 flask~=3.0.3
 pytorch-lightning~=2.4.0
+tensorboardX~=2.6.2.2

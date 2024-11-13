@@ -4,8 +4,8 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 from torchvision import transforms
 
-from resnet18.custom_dataset import CustomDataset
-from resnet18.resnet18classifier import ResNet18Classifier
+from image.resnet18.custom_dataset import CustomDataset
+from image.resnet18.resnet18classifier import ResNet18Classifier
 
 
 if __name__ == '__main__':

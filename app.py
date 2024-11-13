@@ -1,4 +1,5 @@
 import logging
+import os
 
 from flask import Flask, request, jsonify
 
@@ -113,4 +114,13 @@ def extract_pill_features():
 
 
 if __name__ == '__main__':
-    print('test')
+    extractor = PillFeatureExtractor.get_instance()
+
+    base_dir = r'F:\zer0ken\doc-di-ai\pythonProject\image\images'
+    for file in os.listdir(base_dir):
+        file_path = os.path.join(base_dir, file)
+        pills = extractor.extract_with_path(file_path)
+        print(pills)
+        cv2.imshow(file, cv2.imread(file_path, cv2.IMREAD_COLOR))
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
