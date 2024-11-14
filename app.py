@@ -1,12 +1,10 @@
 import logging
-import os
 
+import cv2
+import numpy as np
 from flask import Flask, request, jsonify
 
 from chatbot.bot import Bot
-import cv2
-import numpy as np
-
 from image.pill_feature_extractor import PillFeatureExtractor
 
 app = Flask(__name__)
@@ -84,7 +82,7 @@ def summarize():
             return jsonify({f'error': f'Missing parameter: link[{i}].title'}), 400
 
     bot = Bot.get_instance()
-    response = bot.get_summary_response(sender, data)
+    response = bot.get_summary_response(req)
 
     return response
 
@@ -114,10 +112,21 @@ def extract_pill_features():
 
 
 if __name__ == '__main__':
-    extractor = PillFeatureExtractor.get_instance()
+    bot = Bot.get_instance()
+    log.debug = print
 
-    base_dir = r'F:\zer0ken\doc-di-ai\pythonProject\image\images'
-    for file in os.listdir(base_dir):
-        file_path = os.path.join(base_dir, file)
-        pills = extractor.extract_with_path(file_path)
-        print(pills)
+    # while True:
+    #     print(Bot.get_instance().get_chat_response('test001', input('>>> ')))
+
+    test_data = {
+        'sender_id': 'test101',
+        'query': '두통 원인 남자 20대',
+        'data': [
+            {
+                'title': r'두통 심할 때 어떻게 견디세요?(논현 두통)',
+                'link': f'https://kin.naver.com/qna/detail.naver?d1id=7&dirId=70301&docId=477002203&qb=65GQ7Ya1&enc=utf8&section=kin.qna&rank=1&search_sort=0&spq=0'
+            }
+            for _ in range(10)
+        ]
+    }
+    print(bot.get_summary_response(test_data))

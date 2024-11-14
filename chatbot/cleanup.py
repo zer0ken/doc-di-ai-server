@@ -1,9 +1,11 @@
 import json
 import logging
+from typing import Any
 
-from chatbot.tools import validate_pill_shape, validate_pill_color
+from chatbot.instructions.problem_literals import INVALID_SHAPE, INVALID_COLOR, EMPTY_AGE, EMPTY_GENDER, EMPTY_IMPRINT
+from chatbot.tools import validate_pill_shape, validate_pill_color, validate_age, validate_gender
 
-log = logging.getLogger(__name__)
+log = logging.getLogger()
 
 
 def remove_markdown(text):
@@ -14,10 +16,7 @@ def remove_markdown(text):
     return text.strip()
 
 
-
-def cleanup_chat_response(response: str, recipient_id: str) -> list[dict]:
-    log.debug(f'@CLEANUP_CHAT: {response}')
-
+def cleanup_chat_response(response: str, recipient_id: str) -> tuple[list[Any], list[str]]:
     response = remove_markdown(response)
 
     """json 문자열을 파이썬 자료구조로 파싱"""
@@ -27,6 +26,7 @@ def cleanup_chat_response(response: str, recipient_id: str) -> list[dict]:
     custom = response_object.get('custom', None) or {}
     action = custom.get('action', None)
     data = custom.get('data', None) or {}
+    done = custom.get('done', None) or ''
 
     shape = data.get('shape', None) or ''
     color = data.get('color1', None) or ''
@@ -35,22 +35,35 @@ def cleanup_chat_response(response: str, recipient_id: str) -> list[dict]:
     query = data.get('query', None) or ''
     age = data.get('age', None) or ''
     gender = data.get('gender', None) or ''
+    approved = data.get('approved', None) or ''
 
     """유효성 검사"""
     has_form = True
+    problems = []
 
     if not custom or action is None or not data:
         has_form = False
     elif action == 'DB_SEARCH':
-        if not shape or not color or not imprint:
+        if not shape or not color:
             has_form = False
-        elif not validate_pill_shape(shape):
+        elif not imprint:
             has_form = False
+            problems.append(EMPTY_IMPRINT)
+        if not validate_pill_shape(shape):
+            has_form = False
+            problems.append(INVALID_SHAPE)
         elif not validate_pill_color(color):
             has_form = False
+            problems.append(INVALID_COLOR)
     elif action == 'WEB_SEARCH':
-        if not query or not age or not gender:
+        if not query or not approved:
             has_form = False
+        elif not validate_age(age):
+            has_form = False
+            problems.append(EMPTY_AGE)
+        elif not validate_gender(gender):
+            has_form = False
+            problems.append(EMPTY_GENDER)
 
     if not has_form and custom:
         del response_object['custom']
@@ -67,46 +80,52 @@ def cleanup_chat_response(response: str, recipient_id: str) -> list[dict]:
             for key in ('shape', 'color1', 'txt1'):
                 if key in data:
                     del data[key]
-            if gender not in ('거부', '생략') :
-                data['query'] = gender + ' ' + data['query']
-            if age != '거부':
-                data['query'] = age + ' ' + data['query']
+            if gender in query:
+                data['query'] = data['query'].replace(gender, '')
+            if age in query:
+                data['query'] = data['query'].replace(age, '')
+            if gender not in ('거부함', '생략됨') :
+                data['query'] = data['query'] + ' ' + gender
+            if age not in ('거부함', '생략됨'):
+                data['query'] = data['query'] + ' ' + age
             del data['age']
             del data['gender']
+            del data['approved']
+            data['query'] = data['query'].strip()
 
     response_object['recipient_id'] = recipient_id
 
-    return [response_object]
+    return [response_object], problems if done else []
 
 
 def cleanup_summary_response(response: str, recipient_id: str) -> list[dict]:
-    log.debug(f'@CLEANUP_SUM: {response}')
-
+    print(f'@CLEANUP_SUM: {response}')
     response = remove_markdown(response)
+    print(f'>>> {response}')
 
     response_object_ = json.loads(response)
-    valid_summaries = []
+    # valid_summaries = []
 
     summary = response_object_['summary']
-    data = response_object_['data']
-
-    for datum in data:
-        title = datum.get('title', None) or ''
-        link = datum.get('title', None) or ''
-        question = datum.get('question', None) or ''
-        answer = datum.get('answer', None) or ''
-
-        if not title or not link or not question or not answer:
-            continue
-        # if len(question) > 150 or len(answer) >= 500:
-        #     continue
-
-        valid_summaries.append(datum)
+    # data = response_object_['data']
+    #
+    # for datum in data:
+    #     title = datum.get('title', None) or ''
+    #     link = datum.get('title', None) or ''
+    #     question = datum.get('question', None) or ''
+    #     answer = datum.get('answer', None) or ''
+    #
+    #     if not title or not link or not question or not answer:
+    #         continue
+    #     # if len(question) > 150 or len(answer) >= 500:
+    #     #     continue
+    #
+    #     valid_summaries.append(datum)
 
     response_object = {
         'recipient_id': recipient_id,
         'text': summary,
-        'data': valid_summaries,
+        # 'data': valid_summaries,
     }
 
     return [response_object]
