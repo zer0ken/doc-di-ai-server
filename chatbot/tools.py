@@ -7,8 +7,9 @@ def validate_pill_color(color: str) -> bool:
     :return: Validity of the color name. If the color name is included in
     valid color names' list, returns true. Otherwise, returns false.
     """
-    print(f'@ validate color: {color}')
-    return color in ["하양", "노랑", "주황", "분홍", "빨강", "갈색", "연두", "초록", "청록", "파랑", "남색", "자주", "보라", "회색", "검정", "투명"]
+    is_valiid = color in ["하양", "노랑", "주황", "분홍", "빨강", "갈색", "연두", "초록", "청록", "파랑", "남색", "자주", "보라", "회색", "검정", "투명"]
+    print(f'@ validate color: {color}, {is_valiid}')
+    return is_valiid
 
 
 def validate_pill_shape(shape: str) -> bool:
@@ -21,8 +22,9 @@ def validate_pill_shape(shape: str) -> bool:
     :return: Validity of the shape name. If the shape name is included in
     valid shape names' list, returns true. Otherwise, returns false.
     """
-    print(f'@ validate shape: {shape}')
-    return shape in ["원형", "타원형", "장방형", "반원형", "삼각형", "사각형", "마름모형", "오각형", "육각형", "팔각형", "기타"]
+    is_valid = shape in ["원형", "타원형", "장방형", "반원형", "삼각형", "사각형", "마름모형", "오각형", "육각형", "팔각형", "기타"]
+    print(f'@ validate shape: {shape}, {is_valid}')
+    return is_valid
 
 
 def validate_age(age: str) -> bool:
@@ -31,8 +33,9 @@ def validate_age(age: str) -> bool:
     :param age: User's age.
     :return: Validity of the age. if age is non-empty string, returns true. Otherwise, returns false.
     """
-    print(f'@ validate age: {age}')
-    return bool(age)
+    is_valid = bool(age)
+    print(f'@ validate age: {age}, {is_valid}')
+    return is_valid
 
 
 def validate_gender(gender: str) -> bool:
@@ -41,8 +44,9 @@ def validate_gender(gender: str) -> bool:
     :param gender: User's gender.
     :return: Validity of the gender. if gender is non-empty string, returns true. Otherwise, returns false.
     """
-    print(f'@ validate gender: {gender}')
-    return bool(gender)
+    is_valid = bool(gender)
+    print(f'@ validate gender: {gender}, {is_valid}')
+    return is_valid
 
 
 tools = (

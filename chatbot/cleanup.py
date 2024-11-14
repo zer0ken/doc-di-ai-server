@@ -26,7 +26,7 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
     custom = response_object.get('custom', None) or {}
     action = custom.get('action', None)
     data = custom.get('data', None) or {}
-    done = custom.get('done', None) or ''
+    done = (custom.get('done', None) or '') == '완성됨'
 
     shape = data.get('shape', None) or ''
     color = data.get('color1', None) or ''
