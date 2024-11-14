@@ -91,7 +91,8 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
             data['query'] = data['query'].strip()
 
     response_object['recipient_id'] = recipient_id
-    del data['done']
+    if 'done' in data:
+        del data['done']
 
     return response_object, problems if done else []
 
