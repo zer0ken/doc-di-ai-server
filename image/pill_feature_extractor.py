@@ -148,11 +148,11 @@ class PillFeatureExtractor:
             std_dev = np.std(c)  # R, G, B 값의 표준편차 계산
             brightness = np.mean(c)  # 밝기는 R, G, B 값의 평균
             if std_dev < 15 and brightness > 180:
-                return '흰색'
+                return '하양'
             elif std_dev < 12.5 and brightness > 70:
                 return '회색'
             elif std_dev < 10:
-                return '검정색'
+                return '검정'
             return None
 
         for i, color_pair in enumerate(colorsets):

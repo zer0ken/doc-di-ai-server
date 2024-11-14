@@ -41,7 +41,7 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
     has_form = True
     problems = []
 
-    if not custom or action is None or not data:
+    if not custom or action is None or not data or not done:
         has_form = False
     elif action == 'DB_SEARCH':
         if not shape or not color:
@@ -74,18 +74,22 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
                     del data[key]
             if imprint == '없음':
                 del data['imprint']
+            else:
+                data['txt1'] = data['imprint']
+            data['color1'] = data['color']
+            del data['color']
         elif action == 'WEB_SEARCH':
             for key in ('shape', 'color', 'imprint'):
                 if key in data:
                     del data[key]
-            if gender in query:
-                data['query'] = data['query'].replace(gender, '')
-            if age in query:
-                data['query'] = data['query'].replace(age, '')
-            if gender not in ('거부함', '생략됨') :
-                data['query'] = data['query'] + ' ' + gender
-            if age not in ('거부함', '생략됨'):
-                data['query'] = data['query'] + ' ' + age
+            # if gender in query:
+            #     data['query'] = data['query'].replace(gender, '')
+            # if age in query:
+            #     data['query'] = data['query'].replace(age, '')
+            # if gender not in ('거부함', '생략됨') :
+            #     data['query'] = data['query'] + ' ' + gender
+            # if age not in ('거부함', '생략됨'):
+            #     data['query'] = data['query'] + ' ' + age
             del data['age']
             del data['gender']
             data['query'] = data['query'].strip()
