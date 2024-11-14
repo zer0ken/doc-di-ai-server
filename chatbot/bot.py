@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from time import sleep, time
+from typing import Dict
 
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -31,8 +32,8 @@ class Bot:
         return cls._INSTANCE
 
     @classmethod
-    def get_filtered_response(cls, sender_id: str) -> list[dict]:
-        return [{'recipient_id': sender_id, 'text': Bot.FILTERED_CONTENT}]
+    def get_filtered_response(cls, sender_id: str) -> dict:
+        return {'recipient_id': sender_id, 'text': Bot.FILTERED_CONTENT}
 
     def __init__(self):
         with open('chatbot/instructions/chatbot.md', encoding='utf-8', mode='r') as f:
@@ -55,7 +56,13 @@ class Bot:
 
         self.sum_model = GenerativeModel(
             model_name="gemini-1.5-flash",
-            system_instruction=summary_instruction
+            system_instruction=summary_instruction,
+            safety_settings={
+                HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+            }
         )
         self.sessions: dict[str, ChatSession] = {}
         self.timestamp: dict[str, float] = {}
@@ -89,7 +96,6 @@ class Bot:
         chat = self.get_session(sender_id)
         prompt = prompt.strip()
 
-
         gen_time = time()
         result = generate_response(prompt)
         gen_time = time() - gen_time
@@ -114,7 +120,7 @@ class Bot:
 
         return result
 
-    def get_summary_response(self, request) -> list[dict]:
+    def get_summary_response(self, request) -> dict:
         sender_id = request['sender']
         data = request['data']
 
@@ -130,16 +136,16 @@ class Bot:
         while True:
             try:
                 response = self.sum_model.generate_content(json.dumps(request, ensure_ascii=False))
+                result = response.text.strip()
                 break
             except ResourceExhausted as e:
                 log.debug(e)
                 log.debug('... sleep for 0.5 sec.')
                 sleep(0.5)
-            except (BlockedPromptException, StopCandidateException) as e:
+            except (BlockedPromptException, StopCandidateException, ValueError) as e:
                 return Bot.get_filtered_response(sender_id)
         gen_time = time() - gen_time
 
-        result = response.text.strip()
         result = cleanup_summary_response(result, sender_id)
 
         log.debug(f'{result}\n... took {gen_time} sec')

@@ -26,16 +26,16 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
     custom = response_object.get('custom', None) or {}
     action = custom.get('action', None)
     data = custom.get('data', None) or {}
-    done = (custom.get('done', None) or '') == '완성됨'
 
     shape = data.get('shape', None) or ''
-    color = data.get('color1', None) or ''
-    imprint = data.get('txt1', None) or ''
+    color = data.get('color', None) or ''
+    imprint = data.get('imprint', None) or ''
 
     query = data.get('query', None) or ''
     age = data.get('age', None) or ''
     gender = data.get('gender', None) or ''
-    approved = data.get('approved', None) or ''
+
+    done = (data.get('done', None) or '') == '완성됨'
 
     """유효성 검사"""
     has_form = True
@@ -56,9 +56,7 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
             has_form = False
             problems.append(INVALID_COLOR)
     elif action == 'WEB_SEARCH':
-        if not query or not approved:
-            has_form = False
-        elif not validate_age(age):
+        if not validate_age(age):
             has_form = False
             problems.append(EMPTY_AGE)
         elif not validate_gender(gender):
@@ -75,9 +73,9 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
                 if key in data:
                     del data[key]
             if imprint == '없음':
-                del data['txt1']
+                del data['imprint']
         elif action == 'WEB_SEARCH':
-            for key in ('shape', 'color1', 'txt1'):
+            for key in ('shape', 'color', 'imprint'):
                 if key in data:
                     del data[key]
             if gender in query:
@@ -90,10 +88,10 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[
                 data['query'] = data['query'] + ' ' + age
             del data['age']
             del data['gender']
-            del data['approved']
             data['query'] = data['query'].strip()
 
     response_object['recipient_id'] = recipient_id
+    del data['done']
 
     return response_object, problems if done else []
 
