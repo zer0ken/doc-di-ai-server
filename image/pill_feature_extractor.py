@@ -84,10 +84,10 @@ class PillFeatureExtractor:
         for i, cropped_image in enumerate(cropped_images):
             print(f"{i}: {colors_[i]} {shapes_[i]} {similar_colors[i]}")
 
-        for i, cropped_image in enumerate(cropped_images):
-            cv2.imshow(f'{i}-{colors_[i]}-{shapes_[i]}', cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # for i, cropped_image in enumerate(cropped_images):
+        #     cv2.imshow(f'{i}-{colors_[i]}-{shapes_[i]}', cv2.cvtColor(cropped_image, cv2.COLOR_BGR2RGB))
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
         return [{'color': color, 'shape': shape, 'similar_color': similar_colors}
                 for color, shape, similar_colors in zip(colors_, shapes_, similar_colors)]
