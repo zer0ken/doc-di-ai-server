@@ -115,18 +115,18 @@ if __name__ == '__main__':
     bot = Bot.get_instance()
     log.debug = print
 
-    # while True:
-    #     print(Bot.get_instance().get_chat_response('test001', input('>>> ')))
+    while True:
+        print(Bot.get_instance().get_chat_response('test001', input('>>> ')))
 
-    test_data = {
-        'sender_id': 'test101',
-        'query': '두통 원인 남자 20대',
-        'data': [
-            {
-                'title': r'두통 심할 때 어떻게 견디세요?(논현 두통)',
-                'link': f'https://kin.naver.com/qna/detail.naver?d1id=7&dirId=70301&docId=477002203&qb=65GQ7Ya1&enc=utf8&section=kin.qna&rank=1&search_sort=0&spq=0'
-            }
-            for _ in range(10)
-        ]
-    }
-    print(bot.get_summary_response(test_data))
+    # test_data = {
+    #     'sender_id': 'test101',
+    #     'query': '두통 원인 남자 20대',
+    #     'data': [
+    #         {
+    #             'title': r'두통 심할 때 어떻게 견디세요?(논현 두통)',
+    #             'link': f'https://kin.naver.com/qna/detail.naver?d1id=7&dirId=70301&docId=477002203&qb=65GQ7Ya1&enc=utf8&section=kin.qna&rank=1&search_sort=0&spq=0'
+    #         }
+    #         for _ in range(10)
+    #     ]
+    # }
+    # print(bot.get_summary_response(test_data))

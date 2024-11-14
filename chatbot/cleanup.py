@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Any
+from typing import Any, Dict
 
 from chatbot.instructions.problem_literals import INVALID_SHAPE, INVALID_COLOR, EMPTY_AGE, EMPTY_GENDER, EMPTY_IMPRINT
 from chatbot.tools import validate_pill_shape, validate_pill_color, validate_age, validate_gender
@@ -16,7 +16,7 @@ def remove_markdown(text):
     return text.strip()
 
 
-def cleanup_chat_response(response: str, recipient_id: str) -> tuple[list[Any], list[str]]:
+def cleanup_chat_response(response: str, recipient_id: str) -> tuple[dict, list[str]]:
     response = remove_markdown(response)
 
     """json 문자열을 파이썬 자료구조로 파싱"""
@@ -95,10 +95,10 @@ def cleanup_chat_response(response: str, recipient_id: str) -> tuple[list[Any], 
 
     response_object['recipient_id'] = recipient_id
 
-    return [response_object], problems if done else []
+    return response_object, problems if done else []
 
 
-def cleanup_summary_response(response: str, recipient_id: str) -> list[dict]:
+def cleanup_summary_response(response: str, recipient_id: str) -> dict:
     print(f'@CLEANUP_SUM: {response}')
     response = remove_markdown(response)
     print(f'>>> {response}')
@@ -128,4 +128,4 @@ def cleanup_summary_response(response: str, recipient_id: str) -> list[dict]:
         # 'data': valid_summaries,
     }
 
-    return [response_object]
+    return response_object
