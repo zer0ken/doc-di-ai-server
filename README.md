@@ -1,7 +1,7 @@
 <img src="https://img.shields.io/badge/python-3776AB?logo=python&logoColor=white"> <img src="https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white"> <img src="https://img.shields.io/badge/Yolov11-111F68?logo=yolo&logoColor=white"> <img src="https://img.shields.io/badge/ResNet--18-EE4C2C?logo=pytorch&logoColor=white"> <img src="https://img.shields.io/badge/Google%20Gemini-8E75B2?logo=googlegemini&logoColor=white">
 
 # `doc-di-ai-server`
-이 프로젝트는는 똑디(또는 Doc-di) 앱의 백엔드 서버의 일부로서, 마이크로서비스 구조에서 동작하는 AI 기반 서비스입니다. Flask 프레임워크를 사용하여 챗봇, 요약, 알약 이미지 분석 등의 기능을 제공합니다.
+이 프로젝트는는 똑디 앱의 백엔드 서버의 일부로서, 마이크로서비스 구조에서 동작하는 AI 기반 서비스입니다. Flask 프레임워크를 사용하여 챗봇, 요약, 알약 이미지 분석 등의 기능을 제공합니다.
 
 ## 주요 기능
 
